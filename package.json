@@ -1,0 +1,44 @@
+{
+  "name": "@elizaos-plugins/plugin-tnt-risk-api",
+  "version": "1.0.0",
+  "description": "ElizaOS plugin for TNT House Risk-Data API — Solana token risk scoring and on-chain insider wallet cluster detection for trading agents.",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "keywords": [
+    "elizaos",
+    "eliza-plugin",
+    "solana",
+    "risk-scoring",
+    "trading",
+    "security"
+  ],
+  "author": "TNT House",
+  "license": "MIT",
+  "devDependencies": {
+    "@elizaos/core": "^1.7.2",
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@elizaos/core": "^1.7.2"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "TNT_RISK_API_KEY": {
+        "type": "string",
+        "description": "API key for the TNT House Risk-Data API. Get a free key (15 requests/day, no card) at https://www.tnt-audit.com/risk-api"
+      }
+    }
+  },
+  "dependencies": {
+    "@elizaos/core": "^1.7.2"
+  }
+}
