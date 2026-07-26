@@ -1,11 +1,20 @@
 {
-  "name": "@elizaos-plugins/plugin-tnt-risk-api",
+  "name": "eliza-plugin-tnt-risk-api",
   "version": "1.0.0",
   "description": "ElizaOS plugin for TNT House Risk-Data API — Solana token risk scoring and on-chain insider wallet cluster detection for trading agents.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "files": ["dist", "README.md", "LICENSE"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/menantonio83-hue/eliza-plugin-tnt-risk-api.git"
+  },
+  "homepage": "https://www.tnt-audit.com/risk-api",
+  "bugs": {
+    "url": "https://github.com/menantonio83-hue/eliza-plugin-tnt-risk-api/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
