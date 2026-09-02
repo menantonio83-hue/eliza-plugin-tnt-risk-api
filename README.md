@@ -1,6 +1,10 @@
 # @elizaos-plugins/plugin-tnt-risk-api
 
-ElizaOS plugin that gives your agent a **`CHECK_TOKEN_RISK`** action for Solana tokens, backed by the [TNT House Risk-Data API](https://www.tnt-audit.com/risk-api).
+ElizaOS plugin: **`CHECK_TOKEN_RISK`** action for Solana tokens, backed by RiskDataApi.
+
+Docs: https://www.tnt-audit.com/risk-api/docs
+Free key (15/day): email on https://www.tnt-audit.com/risk-api
+Agents can skip the key and use x402 $0.02/call.
 
 Before your agent trades a Solana token, it can check:
 
