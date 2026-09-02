@@ -1,7 +1,7 @@
 {
   "name": "eliza-plugin-tnt-risk-api",
-  "version": "1.0.0",
-  "description": "ElizaOS plugin for TNT House Risk-Data API — Solana token risk scoring and on-chain insider wallet cluster detection for trading agents.",
+  "version": "1.0.1",
+  "description": "ElizaOS plugin for RiskDataApi — Solana token safety score and insider clusters.",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
