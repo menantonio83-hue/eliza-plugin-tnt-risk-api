@@ -1,10 +1,21 @@
-# @elizaos-plugins/plugin-tnt-risk-api
+# eliza-plugin-tnt-risk-api
 
 ElizaOS plugin: **`CHECK_TOKEN_RISK`** action for Solana tokens, backed by RiskDataApi.
 
 Docs: https://www.tnt-audit.com/risk-api/docs
-Free key (15/day): email on https://www.tnt-audit.com/risk-api
-Agents can skip the key and use x402 $0.02/call.
+Free key (15/day): get one on https://www.tnt-audit.com/risk-api
+
+The plugin works with or without a key:
+
+- **No key** — anonymous fallback. The client simply skips the `Authorization`
+  header; the server answers from a limited per-IP demo pool and marks the
+  response with `_demo`. The agent says so honestly and points at the key
+  signup for higher limits.
+- **With `TNT_RISK_API_KEY`** — authenticated path, 15 requests/day on the
+  free tier (no card required).
+
+x402 pay-per-call negotiation is **not** implemented by this plugin — the
+key-less path is the API's anonymous demo mode, not a payment flow.
 
 Before your agent trades a Solana token, it can check:
 
@@ -16,13 +27,13 @@ Before your agent trades a Solana token, it can check:
 ## Install
 
 ```bash
-bun add @elizaos-plugins/plugin-tnt-risk-api
+npm install eliza-plugin-tnt-risk-api
 ```
 
 Add it to your agent's plugin list:
 
 ```ts
-import { tntRiskApiPlugin } from "@elizaos-plugins/plugin-tnt-risk-api";
+import { tntRiskApiPlugin } from "eliza-plugin-tnt-risk-api";
 
 const character = {
   // ...
@@ -32,11 +43,15 @@ const character = {
 
 ## Configuration
 
-Get a free API key (15 requests/day, no card required) at **[tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**, then set it as an environment variable or plugin setting:
+`TNT_RISK_API_KEY` is optional. Set it to use the authenticated path (15 requests/day, no card required — get a key at **[tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**):
 
 ```bash
 TNT_RISK_API_KEY=tnt_sk_...
 ```
+
+If it is not set (or empty), the plugin automatically falls back to the API's
+anonymous demo mode: responses carry an `_demo` marker and the per-IP daily
+demo quota applies.
 
 ## Usage
 
@@ -47,9 +62,12 @@ Once installed, your agent will automatically use `CHECK_TOKEN_RISK` whenever a 
 You can also call it directly:
 
 ```ts
-import { checkTokenRisk, formatRiskSummary } from "@elizaos-plugins/plugin-tnt-risk-api";
+import { checkTokenRisk, formatRiskSummary } from "eliza-plugin-tnt-risk-api";
 
-const result = await checkTokenRisk(mintAddress, process.env.TNT_RISK_API_KEY!);
+// With a key:
+const result = await checkTokenRisk(mintAddress, process.env.TNT_RISK_API_KEY);
+// Or without a key — anonymous demo mode (limited per day, _demo-flagged):
+// const result = await checkTokenRisk(mintAddress);
 console.log(formatRiskSummary(result));
 ```
 

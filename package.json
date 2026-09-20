@@ -1,6 +1,6 @@
 {
   "name": "eliza-plugin-tnt-risk-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ElizaOS plugin for RiskDataApi — Solana token safety score and insider clusters.",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -43,7 +43,7 @@
     "pluginParameters": {
       "TNT_RISK_API_KEY": {
         "type": "string",
-        "description": "API key for the TNT House Risk-Data API. Get a free key (15 requests/day, no card) at https://www.tnt-audit.com/risk-api"
+        "description": "Optional API key for the TNT House Risk-Data API (15 requests/day, no card) at https://www.tnt-audit.com/risk-api. Without a key the plugin falls back to limited anonymous access."
       }
     }
   },

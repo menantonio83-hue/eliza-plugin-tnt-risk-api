@@ -17,24 +17,35 @@ export interface TokenRiskResult {
   holder_distribution: {
     risk_level: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | "ERROR";
   };
+  /** Present only on anonymous (keyless) responses — the server marks them as demo. */
+  _demo?: { note: string };
 }
 
 /**
  * Calls the TNT House Risk-Data API to check a Solana token's risk profile.
+ *
+ * `apiKey` is optional. Pass a key to use the authenticated path (free tier:
+ * 15 requests/day); omit it to go anonymous — no Authorization header is sent,
+ * the server answers from a limited per-IP demo pool and flags the response
+ * with `_demo`.
+ *
  * On a mint's first-ever check, cluster_analysis comes back "pending" while the
  * insider-cluster trace runs in the background (usually ready within 1-2 minutes).
  */
 export async function checkTokenRisk(
   mint: string,
-  apiKey: string
+  apiKey?: string
 ): Promise<TokenRiskResult> {
   const url = `${API_BASE_URL}/api/v1/token-risk?mint=${encodeURIComponent(mint)}`;
 
+  const headers: Record<string, string> = {};
+  if (apiKey) {
+    headers.Authorization = `Bearer ${apiKey}`;
+  }
+
   const response = await fetch(url, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    headers,
   });
 
   if (!response.ok) {
@@ -58,7 +69,10 @@ export async function checkTokenRisk(
 }
 
 /** Formats a TokenRiskResult into a short, plain-language summary for the agent to speak. */
-export function formatRiskSummary(result: TokenRiskResult): string {
+export function formatRiskSummary(
+  result: TokenRiskResult,
+  options?: { anonymousAccess?: boolean }
+): string {
   const lines: string[] = [];
 
   lines.push(`Safety score: ${result.safety_score}/100`);
@@ -86,6 +100,15 @@ export function formatRiskSummary(result: TokenRiskResult): string {
     `Freeze authority: ${result.freeze_authority.revoked ? "revoked" : "NOT revoked (⚠️ can freeze holder accounts)"}`
   );
   lines.push(`Holder concentration risk: ${result.holder_distribution.risk_level}`);
+
+  const isAnonymous =
+    options?.anonymousAccess === true || typeof result._demo !== "undefined";
+  if (isAnonymous) {
+    lines.push(
+      result._demo?.note ??
+        "Using free anonymous access (limited per day) — get your own free key at tnt-audit.com/risk-api for higher limits."
+    );
+  }
 
   return lines.join("\n");
 }

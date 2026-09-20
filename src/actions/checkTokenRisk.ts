@@ -44,19 +44,14 @@ export const checkTokenRiskAction: Action = {
       return { success: false, text: content.text };
     }
 
+    // A configured key gets the authenticated path; without one we fall back to
+    // the server's anonymous demo path instead of refusing to answer.
     const apiKeySetting = runtime.getSetting("TNT_RISK_API_KEY");
-    if (!apiKeySetting) {
-      const content = {
-        text: "TNT_RISK_API_KEY is not configured. Get a free key (15 req/day, no card) at https://www.tnt-audit.com/risk-api and set it in the plugin config.",
-      };
-      if (callback) await callback(content);
-      return { success: false, text: content.text };
-    }
-    const apiKey = String(apiKeySetting);
+    const apiKey = apiKeySetting ? String(apiKeySetting) : undefined;
 
     try {
       const result = await checkTokenRisk(mint, apiKey);
-      const summary = formatRiskSummary(result);
+      const summary = formatRiskSummary(result, { anonymousAccess: !apiKey });
       const content = { text: `Risk check for ${mint}:\n\n${summary}` };
       if (callback) await callback(content);
       return { success: true, text: content.text, data: result as unknown as Record<string, unknown> };
