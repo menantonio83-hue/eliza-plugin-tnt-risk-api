@@ -43,7 +43,7 @@ const character = {
 
 ## Configuration
 
-`TNT_RISK_API_KEY` is optional. Set it to use the authenticated path (15 requests/day, no card required — get a key at **[tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**):
+`TNT_RISK_API_KEY` is optional. Set it to use the authenticated path (15 requests/day, no card required — get a key at **[www.tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**):
 
 ```bash
 TNT_RISK_API_KEY=tnt_sk_...
@@ -77,7 +77,7 @@ On a mint's **first-ever** check, `cluster_analysis` comes back `"pending"` whil
 
 ## Docs
 
-Full API reference, response schema, and rate limits: **[tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**
+Full API reference, response schema, and rate limits: **[www.tnt-audit.com/risk-api](https://www.tnt-audit.com/risk-api)**
 
 ## License
 
