@@ -7,12 +7,11 @@ Free key (15/day): get one on https://www.tnt-audit.com/risk-api
 
 The plugin works with or without a key:
 
-- **No key** — anonymous fallback. The client simply skips the `Authorization`
-  header; the server answers from a limited per-IP demo pool and marks the
-  response with `_demo`. The agent says so honestly and points at the key
-  signup for higher limits.
-- **With `TNT_RISK_API_KEY`** — authenticated path, 15 requests/day on the
-  free tier (no card required).
+- **No key** — 5 checks/day per IP. The client skips the `Authorization`
+  header; the server marks the response with `_demo`. The agent says so
+  honestly and points at the key signup for a higher limit.
+- **With `TNT_RISK_API_KEY`** — 15 checks/day. After that, $0.02 per check,
+  paid from the key balance or via x402.
 
 x402 pay-per-call negotiation is **not** implemented by this plugin — the
 key-less path is the API's anonymous demo mode, not a payment flow.
@@ -49,9 +48,9 @@ const character = {
 TNT_RISK_API_KEY=tnt_sk_...
 ```
 
-If it is not set (or empty), the plugin automatically falls back to the API's
-anonymous demo mode: responses carry an `_demo` marker and the per-IP daily
-demo quota applies.
+If it is not set (or empty), the plugin uses 5 keyless checks/day per IP
+(`_demo` on the response). With a key: 15/day, then $0.02 per check from
+the key balance or via x402.
 
 ## Usage
 
@@ -66,7 +65,7 @@ import { checkTokenRisk, formatRiskSummary } from "eliza-plugin-tnt-risk-api";
 
 // With a key:
 const result = await checkTokenRisk(mintAddress, process.env.TNT_RISK_API_KEY);
-// Or without a key — anonymous demo mode (limited per day, _demo-flagged):
+// Or without a key — 5 checks/day per IP, _demo-flagged:
 // const result = await checkTokenRisk(mintAddress);
 console.log(formatRiskSummary(result));
 ```

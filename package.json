@@ -1,6 +1,6 @@
 {
   "name": "eliza-plugin-tnt-risk-api",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "ElizaOS plugin for RiskDataApi — Solana token safety score and insider clusters.",
   "main": "dist/index.js",
   "module": "dist/index.js",

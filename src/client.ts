@@ -26,10 +26,10 @@ export interface TokenRiskResult {
 /**
  * Calls the TNT House Risk-Data API to check a Solana token's risk profile.
  *
- * `apiKey` is optional. Pass a key to use the authenticated path (free tier:
- * 15 requests/day); omit it to go anonymous — no Authorization header is sent,
- * the server answers from a limited per-IP demo pool and flags the response
- * with `_demo`.
+ * `apiKey` is optional. Pass a key for the authenticated free tier
+ * (15 requests/day, then $0.02/call from the key balance). Omit it for
+ * 5 keyless checks/day per IP — no Authorization header is sent, and the
+ * server flags the response with `_demo`.
  *
  * On a mint's first-ever check, cluster_analysis comes back "pending" while the
  * insider-cluster trace runs in the background (usually ready within 1-2 minutes).
@@ -61,10 +61,10 @@ export async function checkTokenRisk(
     }
     const suffix = detail ? ` (${detail})` : "";
     if (response.status === 401) {
-      // A missing or invalid key falls back to the anonymous demo pool;
-      // 401 means that pool is used up for today.
+      // 401 means a key was sent and it is missing, unknown, or invalid.
+      // An exhausted keyless quota is 429, not 401.
       throw new Error(
-        `TNT Risk-Data API: no valid API key and today's anonymous demo quota is used up${suffix}. Set TNT_RISK_API_KEY (free key, 15 requests/day: https://www.tnt-audit.com/risk-api).`
+        "TNT Risk-Data API: API key not found or invalid — check TNT_RISK_API_KEY (or remove it to use 5 free keyless checks/day). Free key: https://www.tnt-audit.com/risk-api"
       );
     }
     if (response.status === 402) {
@@ -73,7 +73,16 @@ export async function checkTokenRisk(
       );
     }
     if (response.status === 429) {
-      throw new Error(`TNT Risk-Data API rate limit hit${suffix}. Retry in a moment.`);
+      const retryAfter = Number(response.headers.get("retry-after"));
+      const hours =
+        Number.isFinite(retryAfter) && retryAfter > 0 ? Math.max(1, Math.round(retryAfter / 3600)) : null;
+      const when = hours !== null ? ` — resets in ~${hours} h (UTC midnight)` : "";
+      throw new Error(
+        `Free keyless limit (5/day) used up${when}. Get a free key (15/day) at https://www.tnt-audit.com/risk-api or pay $0.02/call via x402: https://www.tnt-audit.com/api/v1/token-risk/x402?mint=${encodeURIComponent(mint)}`
+      );
+    }
+    if (response.status === 503) {
+      throw new Error("TNT Risk-Data API temporarily unavailable — try again in a minute");
     }
     if (response.status === 400) {
       throw new Error(`Invalid mint address: ${mint}`);
